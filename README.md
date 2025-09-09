@@ -1,69 +1,87 @@
-# React + TypeScript + Vite
+# Rick & Morty Character Explorer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + TypeScript + Vite app to browse Rick & Morty characters with search, reusable UI, and clean architecture.
 
-Currently, two official plugins are available:
+## Requirements & Prerequisites
+- Node.js: 20.19+ (or 22.12+). Vite 7 requires this.
+- Package manager: npm (or yarn/pnpm – adjust commands accordingly)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Quick start for Node using nvm:
+```bash
+nvm use || nvm install
+```
+This project includes an `.nvmrc` set to `20.19.0`.
 
-## Expanding the ESLint configuration
+## Setup & Installation
+```bash
+# install deps
+npm install
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+# start dev server
+npm run dev
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+# type-check + build
+npm run build
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+# preview production build
+npm run preview
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# lint
+npm run lint
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## App Structure
 ```
+src/
+  components/
+    Header.tsx
+    Footer.tsx
+    CharacterCard.tsx
+  pages/
+    home-page.tsx
+    character-page.tsx
+  types/
+    character.ts
+  App.tsx
+  main.tsx
+  index.css
+```
+
+## Functional Overview
+- Home page with CTA to character explorer
+- Reusable `Header` and `Footer` across pages
+- Character explorer:
+  - Fetches from `https://rickandmortyapi.com/api/character`
+  - Search by name
+  - Responsive grid of `CharacterCard`
+  - Loading and error states
+
+## Design Decisions & Rationale
+- Reusable layout primitives (`Header`, `Footer`) for consistency and maintainability
+- `CharacterCard` encapsulates character presentation to keep pages lean
+- Type safety via shared `types/character.ts` to avoid duplication and ensure API parity
+- Fetch API for simplicity; easy to replace with a data layer if needed
+- Tailwind CSS utility classes for fast, consistent styling
+- React Router for client navigation
+
+## Technical Approach & Architecture
+- Presentation components in `components/`; route-level containers in `pages/`
+- Stateless UI where possible; `character-page` owns data fetching and state
+- Search debounced via form submit (keeps API calls predictable). Can swap to onChange debounce later
+- Pagination removed in UI for simplicity after design iteration; API queries default to page 1 but code is structured to reintroduce pagination easily
+
+## Assumptions
+- Character detail page is out of scope; card click is a placeholder
+- Minimal global state; per-page local state suffices
+- Basic accessibility via semantic elements and alt text; can be expanded
+
+## Environment Notes
+- If you see a Vite error about Node versions, ensure you are using Node 20.19+ or 22.12+
+- Use `nvm use` to switch quickly
+
+## Deployment
+- Static build via `npm run build`
+- Serve `dist/` on any static host (Vercel/Netlify/GH Pages)
+
+## Testing
+See `TESTING.md` for the testing plan, scenarios, and tooling suggestions.
